@@ -142,9 +142,11 @@ async function updateUserProfile(existingUser: IUser, parsedData: any): Promise<
   existingUser.name = parsedData.personalInfo?.name || existingUser.name;
   existingUser.contactInfo = {
     ...existingUser.contactInfo,
+    email: existingUser.contactInfo.email, // Preserve required email field
     phone: parsedData.personalInfo?.phone || existingUser.contactInfo.phone,
     linkedin: parsedData.personalInfo?.linkedin || existingUser.contactInfo.linkedin,
     github: parsedData.personalInfo?.github || existingUser.contactInfo.github,
+    portfolio: parsedData.personalInfo?.portfolio || existingUser.contactInfo.portfolio,
     location: parsedData.personalInfo?.location || existingUser.contactInfo.location
   };
   existingUser.summary = parsedData.summary || existingUser.summary;

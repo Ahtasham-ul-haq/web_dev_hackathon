@@ -51,12 +51,11 @@ export async function GET(request: NextRequest) {
     const minSalary = searchParams.get('minSalary');
     const maxSalary = searchParams.get('maxSalary');
     if (minSalary || maxSalary) {
-      filters['salary.min'] = {};
       if (minSalary) {
-        filters['salary.min'].$gte = parseInt(minSalary);
+        filters['salary.min'] = { $gte: parseInt(minSalary) };
       }
       if (maxSalary) {
-        filters['salary.min'].$lte = parseInt(maxSalary);
+        filters['salary.max'] = { $lte: parseInt(maxSalary) };
       }
     }
 

@@ -201,6 +201,7 @@ An intelligent career platform that uses AI to analyze resumes, match candidates
 
 ## Deployment
 
+<<<<<<< HEAD
 ### Vercel Deployment
 1. Push code to GitHub
 2. Connect repository to Vercel
@@ -240,3 +241,12 @@ For support, email support@careerprep.ai or create an issue in the repository.
 - [ ] Interview preparation module
 - [ ] Salary negotiation tools
 - [ ] Career path recommendations
+=======
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+=======
+# Team Members:
+## Muhammad Ahtasham Ul Haq - 25I-3124
+## Abdul Ahad Saqib - 25I-3181
+## LLMS being used --> Claude and ChatGPT and Cursor
+>>>>>>> 517f4fb7539a62bfdae1d5757bd36148b715f7e3
+>>>>>>> 4bb8243bce7a3e6c66fb365577a9235d01716344

@@ -28,7 +28,7 @@ export class JobMatcher {
     const { limit = 50, location, remote, minScore = 0.3 } = options;
 
     // Get user profile
-    const user = await User.findById(userId);
+    const user = await User.findOne({ clerkId: userId });
     if (!user) {
       throw new Error('User not found');
     }
@@ -201,7 +201,7 @@ export class JobMatcher {
     // Also consider years from skills
     const skillYears = user.skills.reduce((sum, skill) => sum + (skill.yearsOfExperience || 0), 0);
 
-    return Math.max(totalYears, skillYears / user.skills.length || 0);
+    return Math.max(totalYears, skillYears / (user.skills.length || 1));
   }
 
   private calculateLocationMatch(user: IUser, job: any): number {
