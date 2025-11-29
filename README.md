@@ -39,5 +39,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Team Members:
 ## Muhammad Ahtasham Ul Haq - 25I-3124
 ## Abdul Ahad Saqib - 25I-3181
-## LLMS being used --> Claude and ChatGPT
+## LLMS being used --> Claude and ChatGPT and Cursor
 >>>>>>> 517f4fb7539a62bfdae1d5757bd36148b715f7e3
