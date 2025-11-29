@@ -37,7 +37,6 @@ An intelligent career platform that uses AI to analyze resumes, match candidates
 - **Groq AI** - AI-powered resume analysis and matching
 
 ### AI & Data Processing
-- **OpenAI API** - Resume parsing and skill assessment
 - **Puppeteer** - Web scraping for job listings
 - **Cheerio** - HTML parsing for scraped data
 - **PDF-parse** - PDF text extraction
