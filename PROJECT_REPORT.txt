@@ -1,0 +1,432 @@
+# CareerPrep AI - Project Report
+
+## Project Overview
+CareerPrep AI is an intelligent career platform that leverages AI to analyze resumes, match candidates with job opportunities, and provide personalized career insights. The platform was recently migrated from NextAuth.js to Clerk authentication and from OpenAI API to Groq API for enhanced performance and cost efficiency.
+
+## Current Status
+**Last Updated:** November 29, 2025
+**Development Phase:** Active Development
+**Server Status:** Partially Functional (Authentication middleware temporarily disabled)
+**Database:** MongoDB Atlas (career_prep database)
+**Users:** 0 registered users (database connection confirmed)
+
+## Architecture
+
+### Technology Stack
+
+#### Frontend
+- **Framework:** Next.js 15 with App Router
+- **Language:** TypeScript 5
+- **Styling:** Tailwind CSS v4
+- **UI Components:** Radix UI primitives
+- **Authentication:** Clerk (recently migrated from NextAuth.js)
+- **File Upload:** React Dropzone
+- **Animations:** Framer Motion
+
+#### Backend
+- **Runtime:** Next.js API Routes (Serverless)
+- **Database:** MongoDB Atlas with Mongoose ODM
+- **AI Service:** Groq API (recently migrated from OpenAI)
+- **PDF Processing:** pdf-parse library
+- **Web Scraping:** Puppeteer + Cheerio
+
+#### Development Tools
+- **Package Manager:** npm
+- **Linting:** ESLint
+- **Type Checking:** TypeScript
+- **Version Control:** Git
+
+## Key Features
+
+### Core Functionality
+1. **Resume Upload & Analysis**
+   - PDF file upload with drag-and-drop interface
+   - AI-powered text extraction using Groq API
+   - Automatic parsing of skills, experience, education, and projects
+   - Real-time processing status updates
+
+2. **User Profile Management**
+   - Comprehensive user profiles with Clerk integration
+   - Skills assessment and proficiency tracking
+   - Experience and education history
+   - Project portfolio management
+
+3. **Job Matching & Recommendations**
+   - Intelligent job matching algorithm
+   - Skill-based job recommendations
+   - Real-time job scraping from multiple sources
+   - Personalized job alerts
+
+4. **Career Analytics**
+   - Skill gap analysis
+   - Career progression insights
+   - Market trend analysis
+   - Resume optimization suggestions
+
+### Authentication & Security
+- **Provider:** Clerk (OAuth, email/password, social login)
+- **Route Protection:** Middleware-based authentication
+- **User Sessions:** Secure session management
+- **API Security:** Environment variable-based API keys
+
+## Database Schema
+
+### User Model (models/User.ts)
+```typescript
+{
+  clerkId: string (unique, required)
+  email: string (required)
+  name: string (required)
+  avatar?: string
+  resumeUrl?: string
+  resumeText?: string
+  contactInfo: {
+    phone?: string
+    email: string
+    linkedin?: string
+    github?: string
+    portfolio?: string
+    location?: string
+  }
+  summary?: string
+  skills: Array<{
+    name: string
+    level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
+    yearsOfExperience?: number
+    endorsements?: number
+  }>
+  experience: Array<{
+    title: string
+    company: string
+    location?: string
+    startDate: Date
+    endDate?: Date
+    current: boolean
+    description: string
+    skills: string[]
+  }>
+  education: Array<{
+    institution: string
+    degree: string
+    field: string
+    startDate: Date
+    endDate?: Date
+    gpa?: number
+    achievements?: string[]
+  }>
+  projects: Array<{
+    name: string
+    description: string
+    technologies: string[]
+    url?: string
+    githubUrl?: string
+    startDate?: Date
+    endDate?: Date
+    highlights?: string[]
+  }>
+  certifications?: string[]
+  languages?: Array<{
+    language: string
+    proficiency: 'Basic' | 'Conversational' | 'Fluent' | 'Native'
+  }>
+  preferences: {
+    jobTitles: string[]
+    locations: string[]
+    remoteWork: boolean
+    salaryRange?: {
+      min: number
+      max: number
+      currency: string
+    }
+    industries: string[]
+  }
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+### Job Model (models/Job.ts)
+```typescript
+{
+  title: string (required)
+  company: string (required)
+  location: string (required)
+  remote: boolean
+  type: 'Full-time' | 'Part-time' | 'Contract' | 'Freelance' | 'Internship'
+  description: string (required)
+  requirements: string[]
+  responsibilities: string[]
+  skills: string[]
+  salary?: {
+    min: number
+    max: number
+    currency: string
+    period: 'hourly' | 'monthly' | 'yearly'
+  }
+  benefits?: string[]
+  industry: string (required)
+  experienceLevel: 'Entry Level' | 'Mid Level' | 'Senior Level' | 'Executive'
+  postedDate: Date (required)
+  applicationDeadline?: Date
+  applicationUrl: string (required)
+  source: string (required) // 'LinkedIn', 'Indeed', 'Glassdoor', etc.
+  sourceUrl: string (required)
+  companyInfo?: {
+    size?: string
+    industry: string
+    description?: string
+    website?: string
+  }
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+## API Endpoints
+
+### Resume Management
+- `POST /api/resume/upload` - Upload and process PDF resume with AI analysis
+- `GET /api/profile` - Retrieve user profile data
+- `POST /api/profile` - Create/update user profile
+
+### Job Management
+- `GET /api/jobs` - Retrieve filtered job listings
+- `POST /api/jobs/scrape` - Trigger job scraping from external sources
+- `POST /api/jobs/match` - Get personalized job matches for user
+
+### Skills & Assessment
+- `POST /api/skills/assess` - AI-powered skill assessment and gap analysis
+
+### Testing & Debugging
+- `GET /api/test-db` - Database connection and user count test
+- `POST /api/test-user` - Create test user in database
+- `POST /api/test-resume` - Create test user with resume data
+
+## Configuration & Environment
+
+### Required Environment Variables
+```env
+# Database
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/career_prep?retryWrites=true&w=majority
+
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_publishable_key
+CLERK_SECRET_KEY=sk_test_your_secret_key
+
+# Groq AI API
+GROQ_API_KEY=your_groq_api_key
+
+# File Upload (optional)
+UPLOAD_DIR=./uploads
+```
+
+### Database Configuration
+- **Provider:** MongoDB Atlas
+- **Database Name:** career_prep
+- **Connection:** SSL enabled, retry writes enabled
+- **Models:** User, Job
+- **Indexes:** Text search on job titles/descriptions, compound indexes for filtering
+
+## Recent Migration & Changes
+
+### Authentication Migration (NextAuth.js → Clerk)
+- **Date:** Recent (within current session)
+- **Changes:**
+  - Replaced `SessionProvider` with `ClerkProvider`
+  - Updated `useSession()` to `useUser()` hooks
+  - Migrated authentication logic across all components
+  - Updated middleware for route protection
+  - Added Clerk user ID (`clerkId`) to User model
+
+### AI Service Migration (OpenAI → Groq)
+- **Date:** Recent (within current session)
+- **Changes:**
+  - Replaced OpenAI SDK with Groq SDK
+  - Updated API endpoints (`/api/resume/upload`, `/api/skills/assess`)
+  - Maintained same prompt structures and response formats
+  - Improved cost efficiency and response speed
+
+### Database Schema Updates
+- **Date:** Recent (within current session)
+- **Changes:**
+  - Added `clerkId` field to User model (unique identifier)
+  - Updated all references from `session.user.id` to `clerkId`
+  - Maintained backward compatibility with existing data
+
+## Current Issues & Known Bugs
+
+### Critical Issues
+1. **Authentication Middleware Disabled**
+   - Status: Temporarily disabled to focus on core functionality
+   - Impact: No route protection currently active
+   - Resolution: Re-enable once resume upload functionality is stable
+
+2. **Resume Upload Errors**
+   - Status: Intermittent server errors
+   - Symptoms: "Server error. Please check your configuration and try again"
+   - Root Cause: Authentication middleware conflicts with API routes
+   - Workaround: Direct API calls work when auth is bypassed
+
+### Minor Issues
+1. **TypeScript Compilation Errors**
+   - Status: Partially resolved
+   - Remaining: Error handling type issues in test endpoints
+   - Impact: Development workflow interrupted
+
+2. **Environment Variable Naming**
+   - Issue: Inconsistent naming (MONGODB_URI vs MONGODB_URL)
+   - Status: Recently corrected in mongodb.ts
+   - Impact: Resolved connection issues
+
+## Development Roadmap
+
+### Immediate Priorities (Next Sprint)
+1. **Fix Authentication Middleware**
+   - Re-enable Clerk middleware with proper API route exclusions
+   - Test complete authentication flow
+   - Ensure resume upload works with authentication
+
+2. **Resume Processing Optimization**
+   - Improve PDF text extraction reliability
+   - Enhance AI prompt engineering for better parsing
+   - Add resume validation and error recovery
+
+3. **Database Integration Testing**
+   - Implement comprehensive database tests
+   - Add data validation and sanitization
+   - Ensure user data persistence across sessions
+
+### Medium-term Goals
+1. **Job Scraping Enhancement**
+   - Expand to additional job sources
+   - Improve scraping reliability and error handling
+   - Add job alert system
+
+2. **User Dashboard Improvements**
+   - Enhanced analytics and visualizations
+   - Resume optimization suggestions
+   - Career path recommendations
+
+3. **Mobile Responsiveness**
+   - Optimize UI for mobile devices
+   - Add PWA capabilities
+   - Improve touch interactions
+
+### Long-term Vision
+1. **Advanced AI Features**
+   - Interview preparation module
+   - Salary negotiation tools
+   - LinkedIn integration
+   - Advanced career analytics
+
+2. **Multi-platform Support**
+   - Mobile app development
+   - API for third-party integrations
+   - White-label solutions
+
+## Deployment & Production
+
+### Current Deployment Status
+- **Platform:** Local development (not deployed)
+- **Database:** MongoDB Atlas (production-ready)
+- **Authentication:** Clerk (production-ready)
+- **AI Service:** Groq (production-ready)
+
+### Production Requirements
+1. **Environment Variables:** All production keys configured
+2. **Database:** MongoDB Atlas with proper security settings
+3. **Domain:** Custom domain for Clerk authentication
+4. **SSL:** HTTPS enabled for all connections
+5. **Monitoring:** Error tracking and analytics setup
+
+### Deployment Checklist
+- [ ] Environment variables configured for production
+- [ ] Database connection tested in production
+- [ ] Clerk authentication configured for production domain
+- [ ] Groq API key with production limits
+- [ ] File upload storage configured (if not using local)
+- [ ] SSL certificates installed
+- [ ] Error monitoring setup
+- [ ] Performance monitoring configured
+
+## Project Structure
+
+```
+career-prep-ai/
+├── app/                          # Next.js App Router
+│   ├── api/                      # API Routes
+│   │   ├── jobs/                 # Job-related endpoints
+│   │   ├── profile/              # User profile endpoints
+│   │   ├── resume/               # Resume processing
+│   │   ├── skills/               # Skills assessment
+│   │   └── test-*/               # Testing endpoints
+│   ├── dashboard/                # User dashboard
+│   ├── upload/                   # Resume upload page
+│   ├── layout.tsx                # Root layout
+│   └── page.tsx                  # Home page
+├── components/                   # Reusable React components
+│   ├── ui/                       # Base UI components
+│   ├── Navbar.tsx                # Navigation component
+│   ├── Hero.tsx                  # Landing page hero
+│   ├── ResumeUpload.tsx          # File upload component
+│   └── ClientLayout.tsx          # Client-side layout wrapper
+├── lib/                          # Utility libraries
+│   ├── mongodb.ts                # Database connection
+│   ├── jobMatcher.ts             # Job matching algorithms
+│   └── jobScrapers.ts            # Web scraping utilities
+├── models/                       # Mongoose models
+│   ├── User.ts                   # User schema
+│   └── Job.ts                    # Job schema
+├── middleware.ts                 # Next.js middleware
+├── tailwind.config.js            # Tailwind CSS config
+├── next.config.js                # Next.js config
+├── package.json                  # Dependencies
+├── README.md                     # Project documentation
+└── .env.local                    # Environment variables (filtered)
+```
+
+## Contributing Guidelines
+
+### Code Style
+- **Language:** TypeScript for type safety
+- **Formatting:** ESLint configuration enforced
+- **Commits:** Clear, descriptive commit messages
+- **Branches:** Feature branches for new development
+
+### Testing Strategy
+- **Unit Tests:** Component and utility function testing
+- **Integration Tests:** API endpoint testing
+- **E2E Tests:** User flow testing (planned)
+- **Database Tests:** Connection and data integrity testing
+
+### Documentation
+- **README:** Comprehensive setup and usage guide
+- **Code Comments:** Inline documentation for complex logic
+- **API Docs:** Endpoint documentation with examples
+- **Type Definitions:** Full TypeScript interfaces
+
+## Support & Maintenance
+
+### Monitoring
+- **Error Tracking:** Console logging currently, Sentry planned
+- **Performance:** Basic response time monitoring
+- **Database:** Connection health monitoring
+- **API Usage:** Rate limiting and usage tracking
+
+### Backup & Recovery
+- **Database:** MongoDB Atlas automated backups
+- **Code:** Git version control with GitHub
+- **Configuration:** Environment variable management
+- **Assets:** File upload storage with redundancy
+
+### Security Measures
+- **Authentication:** Clerk security best practices
+- **API Keys:** Environment variable protection
+- **Data Validation:** Input sanitization and validation
+- **CORS:** Proper cross-origin resource sharing setup
+
+---
+
+**Report Generated:** November 29, 2025
+**Project Version:** 0.1.0
+**Next Update:** December 2025 (post-authentication fixes)
